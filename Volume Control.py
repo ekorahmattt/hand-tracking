@@ -25,12 +25,22 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         # print(results)
         
+        lmlist = []
         if results.multi_hand_landmarks:
-            for num, hand in enumerate(results.multi_hand_landmarks):
+            myHand = results.multi_hand_landmarks[0]
+            for id, dot in enumerate(myHand.landmark):
+                h, w, c = image.shape
+                cx, cy = int(dot.x * w), int(dot.y * h)
+                lmlist.append([id, cx, cy])
+
+            for hand in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS, 
                                         mp_drawing.DrawingSpec(color=(0, 0, 200), thickness=2, circle_radius=4),
                                         mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=2))
-            
+
+        if len(lmlist) != 0:
+            x1, y1 = lmlist[4][1], lmlist[4][2]
+            x2, y2 = lmlist[8][1], lmlist[8][2]
         
         cv2.imshow('Hand Tracking', image)
 
