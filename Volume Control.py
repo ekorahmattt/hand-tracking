@@ -1,9 +1,12 @@
 import mediapipe as mp
 import cv2
 import numpy as np
+import math
 import uuid
 import os
 import time
+
+# import pycaw.pycaw
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
@@ -33,14 +36,19 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
                 cx, cy = int(dot.x * w), int(dot.y * h)
                 lmlist.append([id, cx, cy])
 
-            for hand in results.multi_hand_landmarks:
-                mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS, 
-                                        mp_drawing.DrawingSpec(color=(0, 0, 200), thickness=2, circle_radius=4),
-                                        mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=2))
+            # for hand in results.multi_hand_landmarks:
+            #     mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS, 
+            #                             mp_drawing.DrawingSpec(color=(0, 0, 200), thickness=2, circle_radius=4),
+            #                             mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=2))
 
         if len(lmlist) != 0:
             x1, y1 = lmlist[4][1], lmlist[4][2]
             x2, y2 = lmlist[8][1], lmlist[8][2]
+
+            cv2.line(image, (x1, y1), (x2, y2), (255,0,0), 3)
+            length = math.hypot(x2-x1, y2-y1)
+
+            
         
         cv2.imshow('Hand Tracking', image)
 
